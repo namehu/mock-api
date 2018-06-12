@@ -5,3 +5,18 @@ export const mysqlConfig = {
   database: 'easy-mock',
   port: '3306',
 };
+
+// SQL CODE 码表
+export const SQL_CODE_TABLE = {
+  AND: 'AND ',
+  ASC: 'ASC',
+  DESC: 'DESC',
+  FROM: 'FROM ',
+  GROUP_BY: 'GROUP BY',
+  INSERT: 'INSERT ',
+  INTO: 'INTO ',
+  ORDER_BY: 'ORDER BY',
+  SELECT: 'SELECT ',
+  UPDATE: 'UPDATE ',
+  WHERE: 'WHERE ',
+};
