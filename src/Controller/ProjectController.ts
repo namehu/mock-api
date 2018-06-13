@@ -1,8 +1,9 @@
 import { Request } from 'express';
-import { isEmpty, forEach } from 'lodash';
+import { isEmpty, forEach, merge } from 'lodash';
 import BaseController from './BaseControllor';
 import ProjectEntity from '../Entitys/ProjectEntity';
 import { SUCCESS, NO_FOUND, PARAMS_MISS } from '../httpResponse';
+import { entityMap } from './utils';
 /**
  *  项目controller
  *  
@@ -32,13 +33,13 @@ export default class ProjectController extends BaseController {
    * 项目是否存在
    *
    * @param {Request} request
-   * @param {Response} respose
+   * @param {String} u 内部调用传入的url
    * @param {NextFunction} next
    * @memberof ProjectController
    */
-  public isExit(request: Request) {
+  public isExit(request: Request, u?: string) {
     const data = request.query;
-    const url = data.url || '';
+    const url = data.url || u || '';
 
     if (!url) {
       return NO_FOUND
@@ -47,7 +48,7 @@ export default class ProjectController extends BaseController {
     const result = this.count({
       url,
     }).then((count) => {
-      return Object.assign(SUCCESS, {
+      return merge({}, SUCCESS, {
         count,
         message: count ? '项目已经存在' : 'success'
       })
@@ -56,69 +57,43 @@ export default class ProjectController extends BaseController {
     return result;
   }
 
-  public addProject(request: Request) {
-    const body = request.body;
+  /**
+   * 添加项目
+   *
+   * @param {Request} request
+   * @returns
+   * @memberof ProjectController
+   */
+  public async addProject(request: Request) {
+    const params = request.body;
 
-    if (isEmpty(body)) {
+    const entity = new ProjectEntity();
+    const map = entityMap<ProjectEntity>(params, entity);
+
+    if (!map) {
       return PARAMS_MISS;
     }
+    // 判断项目url是否存在
+    const isExit = await this.isExit(request, map.url);
+    if (isExit.code !== 200 || (<any>isExit).count >= 1) {
+      return isExit;
+    }
 
-    const data = dataValidAndMap(body, ProjectEntity)
+    const result = await this.add(map);
 
-    return data;
+    return merge({}, SUCCESS, {
+      data: merge({}, map, { id: result.insertId })
+    });
+  }
+
+  public async deleteProject(request: Request) {
+    const id = request.query.id;
+    if (!id) {
+      return PARAMS_MISS
+    }
+
+    return id;
   }
 
 }
 
-
-function dataValidAndMap(data: any, entity: Entity) {
-  // 实体为空则不做验证，返回空Map
-  if (isEmpty(entity)) return {};
-  // 数据为空。则验证不通过
-  if (isEmpty(data)) return false;
-
-  const o: any = {};
-  let flag: boolean = false;
-  forEach(entity, (v, k) => {
-    if (flag) return;
-    const value = data[k];
-    if (typeof (v) === 'object') {
-      if (v.require && !value) {
-        return flag = true;
-      }
-
-      if (v.type === 'string') {
-        o[k] = String(value || v.default || '');
-      } else if (v.type === 'number') {
-        o[k] = Number(value || v.default || 0);
-      } else if (v.type === 'boolean') {
-        o[k] = Boolean(value || v.default || false);
-
-      } else if (v.type === 'object') {
-        if (typeof value === 'object' || !v.require) {
-          o[k] = value || Object(v.default || {});
-        } else {
-          return flag = true;
-        }
-      } else {
-        o[k] = undefined
-      }
-
-    } else {
-      if (v === 'string') {
-        o[k] = String(value || '');
-      } else if (v === 'number') {
-        o[k] = Number(value || 0);
-      } else if (v === 'object') {
-        o[k] = Object(value || {})
-      } else if (v === 'boolean') {
-        o[k] = Boolean(v || false);
-      } else {
-        o[k] = undefined
-      }
-    }
-  });
-  if (flag) return false;
-
-  return o;
-}

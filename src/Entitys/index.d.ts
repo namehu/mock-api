@@ -1,4 +1,4 @@
-declare type TY = 'string' | 'number' | 'boolean' | 'object';
+declare type TY = 'string' | 'number' | 'boolean' | 'object' | null;
 
 declare interface Entity {
   [name: string]: {

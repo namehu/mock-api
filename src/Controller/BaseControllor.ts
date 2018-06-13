@@ -51,7 +51,7 @@ export default class BaseController {
       });
     });
 
-    return result;
+    return result as any;
   }
 
   /**

@@ -37,6 +37,15 @@ const location: Location = {
           },
           description: '新增项目',
         },
+        {
+          name: 'api/project',
+          method: 'DELETE',
+          handler: 'deleteProject',
+          query: {
+            id: '$$',
+          },
+          description: '根据id删除项目'
+        }
       ]
     }
   ],
