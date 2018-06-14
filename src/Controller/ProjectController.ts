@@ -4,6 +4,8 @@ import BaseController from './BaseControllor';
 import ProjectEntity from '../Entitys/ProjectEntity';
 import { SUCCESS, NO_FOUND, PARAMS_MISS } from '../httpResponse';
 import { entityMap } from './utils';
+import moment from 'moment';
+
 /**
  *  项目controller
  *  
@@ -79,7 +81,9 @@ export default class ProjectController extends BaseController {
       return isExit;
     }
 
-    const result = await this.add(map);
+    console.log(map);
+    // const result = await this.add(map);
+    const result = { insertId: 1 };
 
     return merge({}, SUCCESS, {
       data: merge({}, map, { id: result.insertId })

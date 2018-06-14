@@ -1,4 +1,5 @@
 import BaseEntity, { IBaseEntity } from "./BaseEntity";
+import moment, { Moment } from 'moment';
 
 /**
  * 项目实体
@@ -8,7 +9,7 @@ import BaseEntity, { IBaseEntity } from "./BaseEntity";
  */
 export default class ProjectEntity extends BaseEntity implements IBaseEntity {
   constructor() {
-    super();
+    super(moment().toDate());
   }
 
   /**

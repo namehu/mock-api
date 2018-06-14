@@ -14,13 +14,19 @@ export interface IBaseEntity {
  */
 export default abstract class BaseEntity implements IBaseEntity {
   
+  constructor(date: Date) {
+    const d = new Date();
+    this.createTime = date;
+    this.updateTime = date;
+  }
+
   /**
    * 创建时间
    *
    * @type {Date}
    * @memberof BaseEntity
    */
-  createTime: Date = new Date();
+  createTime: Date;
 
   /**
    * 更新时间
@@ -28,5 +34,5 @@ export default abstract class BaseEntity implements IBaseEntity {
    * @type {Date}
    * @memberof BaseEntity
    */
-  updateTime: Date = new Date();
+  updateTime: Date;
 }
