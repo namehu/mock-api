@@ -88,6 +88,19 @@ export default class ProjectController {
     });
   }
 
+  /**
+   * 删除项目(硬删除)
+   *
+   * @param {Request} request
+   * @returns
+   * @memberof ProjectController
+   */
+  public async deleteById(request: Request): Promise<HttpResponseData> {
+    const id: number = request.query.id;
+    const data: HttpResponseData = await this.projectService.deleteById(id);
+    return data;
+  }
+
 
 }
 

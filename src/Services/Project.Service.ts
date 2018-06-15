@@ -22,7 +22,7 @@ export default class ProjectService extends BaseService {
    * @memberof ProjectService
    */
   private projectDao: ProjectDao = new ProjectDao();
-  
+
   /**
    * 查询项目列表
    *
@@ -33,5 +33,37 @@ export default class ProjectService extends BaseService {
    */
   public queryList(number: number, size: number) {
     return this.projectDao.queryList(number, size)
+  }
+
+  /**
+   * 根据id删除项目
+   *
+   * @param {number} id
+   * @returns
+   * @memberof ProjectService
+   */
+  public async deleteById(id: number): Promise<HttpResponseData> {
+    let data: HttpResponseData = {
+      code: 200,
+      message: '删除失败'
+    };
+    const result = await this.projectDao.deleteById(id);
+    if (result) {
+      if (result.affectedRows > 0) {
+        data = {
+          code: 200,
+          message: 'success',
+          data: {
+            id,
+          },
+        };
+      } else {
+        data = {
+          code: 200,
+          message: '删除失败，项目不存在'
+        }
+      }
+    }
+    return data
   }
 }

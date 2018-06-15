@@ -44,7 +44,7 @@ const location: Location = {
         {
           name: 'api/project',
           method: 'DELETE',
-          handler: 'deleteProject',
+          handler: 'deleteById',
           query: {
             id: '$$',
           },

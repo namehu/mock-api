@@ -21,6 +21,7 @@ import {
   ORDER_BY,
   DESC,
   IN,
+  DELETE,
 } from '../sql';
 
 const pool = mysql.createPool(Object.assign(mysqlConfig, {
@@ -113,6 +114,27 @@ export default class BaseDao extends UtilsDao {
     })
     
     return this.convertSqlToEntity(data);
+  }
+
+  /**
+   * 根据条件删除
+   *
+   * @param {OriginObject} condition
+   * @returns
+   * @memberof BaseDao
+   */
+  public async delete(condition: OriginObject) {
+    let sql = DELETE + FROM + this.tableName;
+
+    sql = this.spliceWhere(sql, condition);
+
+    const data = await new Promise<MysqlResult>((resolve, reject) => {
+      pool.query(sql, (err, result) => {
+        if (err) { reject(err); } else if (result) { resolve(result); }
+      });
+    })
+
+    return data;
   }
 
   /**
