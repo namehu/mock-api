@@ -9,7 +9,7 @@ import moment, { Moment } from 'moment';
  */
 export default class ProjectEntity extends BaseEntity implements IBaseEntity {
   constructor() {
-    super(moment().toDate());
+    super();
   }
 
   /**

@@ -15,6 +15,9 @@ export const DOUBLE_QUESTION = ' ?? ';
 export const QUESTION = ' ? ';
 export const EQUAL = ' = ';
 export const COUNT_ALL = ' COUNT(*) ';
+export const LIMIT = ' LIMIT ';
+export const OFFSET = ' OFFSET ';
+export const IN = ' IN ';
 
 /** ----------------- 项目 --------------------- */
 // 查询项目信息

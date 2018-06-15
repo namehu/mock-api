@@ -1,4 +1,4 @@
-import ProjectController from '../Controller/ProjectController';
+import ProjectController from '../Controllers/Project.Controller';
 
 const c = new ProjectController();
 
@@ -14,6 +14,10 @@ const location: Location = {
       path: [
         {
           name: 'api/projects',
+          query: {
+            pageNumber: '$$',
+            pageSize: '$$',
+          },
           handler: 'getProjectList',
           description: '项目列表',
         },

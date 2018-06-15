@@ -1,7 +1,8 @@
+import moment from 'moment';
 
 export interface IBaseEntity {
-  createTime: Date;
-  updateTime: Date;
+  createTime: String;
+  updateTime: String;
 }
 
 /**
@@ -14,10 +15,10 @@ export interface IBaseEntity {
  */
 export default abstract class BaseEntity implements IBaseEntity {
   
-  constructor(date: Date) {
-    const d = new Date();
-    this.createTime = date;
-    this.updateTime = date;
+  constructor() {
+    const d = moment().format('YYYY-MM-DD hh:mm:ss');
+    this.createTime = d;
+    this.updateTime = d;
   }
 
   /**
@@ -26,7 +27,7 @@ export default abstract class BaseEntity implements IBaseEntity {
    * @type {Date}
    * @memberof BaseEntity
    */
-  createTime: Date;
+  createTime: String;
 
   /**
    * 更新时间
@@ -34,5 +35,5 @@ export default abstract class BaseEntity implements IBaseEntity {
    * @type {Date}
    * @memberof BaseEntity
    */
-  updateTime: Date;
+  updateTime: String;
 }

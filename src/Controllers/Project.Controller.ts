@@ -1,23 +1,19 @@
 import { Request } from 'express';
-import { isEmpty, forEach, merge } from 'lodash';
-import BaseController from './BaseControllor';
+import { isEmpty, forEach, merge, toNumber } from 'lodash';
 import ProjectEntity from '../Entitys/ProjectEntity';
 import { SUCCESS, NO_FOUND, PARAMS_MISS } from '../httpResponse';
 import { entityMap } from './utils';
-import moment from 'moment';
+import ProjectService from '../Services/Project.Service';
 
 /**
  *  项目controller
  *  
  * @export
  * @class ProjectController
- * @extends {BaseController}
  */
-export default class ProjectController extends BaseController {
+export default class ProjectController {
 
-  public constructor() {
-    super('project');
-  }
+  private projectService: ProjectService = new ProjectService();
 
   /**
    * 获取项目列表
@@ -26,9 +22,15 @@ export default class ProjectController extends BaseController {
    * @returns
    * @memberof ProjectController
    */
-  public getProjectList(request: Request) {
-    const data = this.query();
-    return data;
+  public async getProjectList(request: Request) {
+    const size = toNumber(request.query.pageSize);
+    const number = toNumber(request.query.pageNumber);
+    const data = await this.projectService.queryList(number, size);
+    return merge({}, {
+      code: 200,
+      message: 'success',
+      data,
+    });
   }
 
   /**
@@ -47,9 +49,7 @@ export default class ProjectController extends BaseController {
       return NO_FOUND
     }
 
-    const result = this.count({
-      url,
-    }).then((count) => {
+    const result = this.projectService.count(undefined, { url }).then((count) => {
       return merge({}, SUCCESS, {
         count,
         message: count ? '项目已经存在' : 'success'
@@ -81,23 +81,13 @@ export default class ProjectController extends BaseController {
       return isExit;
     }
 
-    console.log(map);
-    // const result = await this.add(map);
-    const result = { insertId: 1 };
+    const result = await this.projectService.add(map);
 
     return merge({}, SUCCESS, {
       data: merge({}, map, { id: result.insertId })
     });
   }
 
-  public async deleteProject(request: Request) {
-    const id = request.query.id;
-    if (!id) {
-      return PARAMS_MISS
-    }
-
-    return id;
-  }
 
 }
 
