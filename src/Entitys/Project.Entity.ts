@@ -1,4 +1,4 @@
-import BaseEntity, { IBaseEntity } from "./BaseEntity";
+import BaseEntity from "./Base.Entity";
 import moment, { Moment } from 'moment';
 
 /**
@@ -11,6 +11,14 @@ export default class ProjectEntity extends BaseEntity implements IBaseEntity {
   constructor() {
     super();
   }
+
+  /**
+   * 项目id
+   *
+   * @type {number}
+   * @memberof ProjectEntity
+   */
+  public id: number = 0;
 
   /**
    * 项目名称

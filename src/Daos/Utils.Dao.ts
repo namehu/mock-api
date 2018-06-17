@@ -1,6 +1,6 @@
 import { isEmpty, forEach } from 'lodash';
 import mysql from 'mysql';
-import { WHERE, DOUBLE_QUESTION, EQUAL, IN, AND, QUESTION } from '../sql';
+import { WHERE, DOUBLE_QUESTION, EQUAL, IN, AND, QUESTION, SET, COMMA } from '../sql';
 
 /**
  * 工具Dao
@@ -18,7 +18,7 @@ export default class UtilsDao {
    * @returns
    * @memberof UtilsDao
    */
-  protected underscoreName(name: any) {
+  protected underscoreName(name: any): string {
     return String(name).replace(/([A-Z]+)/g, (v) => `_${v.toLowerCase()}`);
   }
 
@@ -30,7 +30,7 @@ export default class UtilsDao {
    * @returns
    * @memberof UtilsDao
    */
-  protected upperCaseName(name: any) {
+  protected upperCaseName(name: any): string {
     return String(name).replace(/(_[a-z])/g, (v) => `${v.slice(1).toUpperCase()}`);
   }
 
@@ -43,12 +43,12 @@ export default class UtilsDao {
    * @returns string sql
    * @memberof BaseController
    */
-  protected spliceWhere(sql: string, queryCondition?: any) {
+  protected spliceWhere(sql: string, queryCondition?: any): string {
     if (queryCondition && !isEmpty(queryCondition)) {
       sql += WHERE;
       const sqlFormaValue: any[] = [];
       forEach(queryCondition, (v, k) => {
-        if (!v) { return };
+        // if (!v) { return };
         sqlFormaValue.push(this.underscoreName(k));
         sqlFormaValue.push(v);
         if (v instanceof Array) {
@@ -61,6 +61,33 @@ export default class UtilsDao {
       sql = sql.slice(0, sql.lastIndexOf(AND));
       sql = mysql.format(sql, sqlFormaValue);
     }
+    return sql.trim();
+  }
+
+  /**
+   * 拼接update的set部分
+   *
+   * @protected
+   * @param {string} sql
+   * @param {*} [updateCondition]
+   * @returns {string}
+   * @memberof UtilsDao
+   */
+  protected spliceUpdate(sql: string, updateCondition?: any): string {
+    if (updateCondition && !isEmpty(updateCondition)) {
+      sql += SET;
+      const sqlFormaValue: any[] = [];
+      forEach(updateCondition, (v, k) => {
+        sqlFormaValue.push(this.underscoreName(k));
+        sqlFormaValue.push(v);
+
+        sql += DOUBLE_QUESTION + EQUAL + QUESTION + COMMA; // '?? = ? and'
+      });
+
+      sql = sql.slice(0, sql.lastIndexOf(COMMA));
+      sql = mysql.format(sql, sqlFormaValue);
+    }
+
     return sql.trim();
   }
 

@@ -1,6 +1,7 @@
 import { Request } from 'express';
+import moment from 'moment';
 import { isEmpty, forEach, merge, toNumber } from 'lodash';
-import ProjectEntity from '../Entitys/ProjectEntity';
+import ProjectEntity from '../Entitys/Project.Entity';
 import { SUCCESS, NO_FOUND, PARAMS_MISS } from '../httpResponse';
 import { entityMap } from './utils';
 import ProjectService from '../Services/Project.Service';
@@ -70,9 +71,9 @@ export default class ProjectController {
     const params = request.body;
 
     const entity = new ProjectEntity();
-    const map = entityMap<ProjectEntity>(params, entity);
+    const map: ProjectEntity = entityMap<ProjectEntity>(params, entity);
 
-    if (!map) {
+    if (isEmpty(map)) {
       return PARAMS_MISS;
     }
     // 判断项目url是否存在
@@ -89,6 +90,25 @@ export default class ProjectController {
   }
 
   /**
+   * 更新项目
+   *
+   * @param {Request} request
+   * @returns {Promise<HttpResponseData>}
+   * @memberof ProjectController
+   */
+  public async update(request: Request): Promise<HttpResponseData> {
+    const id: number = request.params.id;
+    const data = request.body;
+    data.id = id;
+
+    const entity: ProjectEntity = new ProjectEntity();
+    const map: ProjectEntity = entityMap<ProjectEntity>(data, entity);
+
+    const result: HttpResponseData = await this.projectService.updateProject(map);
+    return result;
+  }
+
+  /**
    * 删除项目(硬删除)
    *
    * @param {Request} request
@@ -96,7 +116,7 @@ export default class ProjectController {
    * @memberof ProjectController
    */
   public async deleteById(request: Request): Promise<HttpResponseData> {
-    const id: number = request.query.id;
+    const id: number = request.params.id;
     const data: HttpResponseData = await this.projectService.deleteById(id);
     return data;
   }

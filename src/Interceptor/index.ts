@@ -11,7 +11,7 @@ export interface Location {
   description?: string;
 }
 
-type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS' | 'ALL';
+type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS' | 'PATCH'| 'ALL';
 export interface Path {
   name: string;
   method?: Method;
@@ -39,10 +39,10 @@ function bindPath(paths: Path[], location: Location, app: express.Express, contr
     (app as any)[(path.method || 'GET').toLowerCase()](pathName,
       (req: Request, res: Response, next: NextFunction) => {
 
-        const reqFullUrl: string = `${req.protocol}://${req.hostname}${req.path}`;
+        const reqFullUrl: string = `${req.protocol}://${req.hostname}`;
         const pathUrl: string = location.protocol === '//' ?
           `${location.protocol}:${locationUrl}` :
-          `${location.protocol}://${locationUrl + pathName}`;
+          `${location.protocol}://${locationUrl}`;
 
         // 域名路径不匹配直接返回下一个中间件
         if (reqFullUrl !== pathUrl) { return next(); }

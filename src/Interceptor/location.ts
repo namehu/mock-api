@@ -1,8 +1,9 @@
+import { Location } from './index';
 import ProjectController from '../Controllers/Project.Controller';
+import PathController from '../Controllers/Path.Controller';
 
 const c = new ProjectController();
-
-import { Location } from './index';
+const pathController = new PathController();
 
 const location: Location = {
   protocol: 'http',
@@ -42,15 +43,44 @@ const location: Location = {
           description: '新增项目',
         },
         {
-          name: 'api/project',
+          name: '/api/project/:id',
+          method: 'PATCH',
+          body: {
+            name: '$$',
+            url: '$$',
+            description: '?',
+            protocol: '$$',
+          },
+          handler: 'update',
+          description: '更新项目信息',
+        },
+        {
+          name: 'api/project/:id',
           method: 'DELETE',
           handler: 'deleteById',
-          query: {
-            id: '$$',
-          },
           description: '根据id删除项目'
         }
       ]
+    }, 
+    {
+      controller: pathController,
+      path: [
+        {
+          name: 'api/path',
+          method: 'POST',
+          body: {
+            name: '$$',
+            method: '$$',
+            query: '?',
+            body: '?',
+            json: '?',
+            description: '?',
+            projectId: '$$',
+          },
+          handler: 'addPath',
+          description: '新增路径',
+        },
+      ],
     }
   ],
   version: '1.0',
