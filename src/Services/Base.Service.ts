@@ -3,6 +3,9 @@ import BaseDao from '../Daos/Base.Dao';
 
 export default class BaseService {
 
+  constructor(public tabalename: string) {
+    this.baseDao = new BaseDao(tabalename);
+  }
   /**
    * 基础Dao
    *
@@ -10,7 +13,7 @@ export default class BaseService {
    * @type {BaseDao}
    * @memberof BaseService
    */
-  private baseDao: BaseDao = new BaseDao('');
+  private baseDao: BaseDao;
 
   /**
    * 查询

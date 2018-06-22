@@ -14,6 +14,9 @@ import { isEmpty } from 'lodash';
  */
 export default class ProjectService extends BaseService {
 
+  constructor() {
+    super('project');
+  }
   /**
    * 项目Dao
    *

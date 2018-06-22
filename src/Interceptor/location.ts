@@ -16,8 +16,14 @@ const location: Location = {
         {
           name: 'api/projects',
           query: {
-            pageNumber: '$$',
-            pageSize: '$$',
+            pageNumber: {
+              type: Number,
+              require: true,
+            },
+            pageSize: {
+              type: Number,
+              require: true,
+            },
           },
           handler: 'getProjectList',
           description: '项目列表',
@@ -26,7 +32,10 @@ const location: Location = {
           name: 'api/project',
           handler: 'isExit',
           query: {
-            url: '$$',
+            url: {
+              type: String,
+              require: true,
+            },
           },
           description: '项目是否有效',
         },
@@ -35,10 +44,19 @@ const location: Location = {
           method: 'POST',
           handler: 'addProject',
           body: {
-            name: '$$',
-            url: '$$',
-            description: '?',
-            protocol: '$$',
+            name: {
+              type: String,
+              require: true,
+            },
+            url: {
+              type: String,
+              require: true,
+            },
+            description: String,
+            protocol: {
+              type: Number,
+              require: true,
+            },
           },
           description: '新增项目',
         },
@@ -46,10 +64,19 @@ const location: Location = {
           name: '/api/project/:id',
           method: 'PATCH',
           body: {
-            name: '$$',
-            url: '$$',
-            description: '?',
-            protocol: '$$',
+            name: {
+              type: String,
+              require: true,
+            },
+            url: {
+              type: String,
+              require: true,
+            },
+            description: String,
+            protocol: {
+              type: Number,
+              require: true,
+            },
           },
           handler: 'update',
           description: '更新项目信息',
@@ -69,13 +96,22 @@ const location: Location = {
           name: 'api/path',
           method: 'POST',
           body: {
-            name: '$$',
-            method: '$$',
-            query: '?',
-            body: '?',
-            json: '?',
-            description: '?',
-            projectId: '$$',
+            name: {
+              type: String,
+              require: true,
+            },
+            method: {
+              type: String,
+              require: true,
+            },
+            query: Object,
+            body: Object,
+            json: String,
+            description: String,
+            projectId: {
+              type: Number,
+              require: true,
+            },
           },
           handler: 'addPath',
           description: '新增路径',

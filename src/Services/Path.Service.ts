@@ -11,7 +11,10 @@ import PathEntity from "../Entitys/Path.Entity";
  */
 export default class PathService extends BaseService {
 
-
+  constructor() {
+    super('path');
+  }
+  
   /**
    * Path Dao
    *

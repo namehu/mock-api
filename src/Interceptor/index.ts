@@ -1,5 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
+import url from 'url';
 import { isSameQuery } from '../utils';
+import { validParams } from './uitils';
 import LO from './location';
 
 export interface Location {
@@ -11,7 +13,8 @@ export interface Location {
   description?: string;
 }
 
-type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS' | 'PATCH'| 'ALL';
+type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS' | 'PATCH' | 'ALL';
+
 export interface Path {
   name: string;
   method?: Method;
@@ -26,6 +29,8 @@ export interface PathGroup {
   path: Path[];
   description?: string;
 }
+
+let message: string = '';
 
 // 绑定location 监听
 function bindPath(paths: Path[], location: Location, app: express.Express, controller?: any) {
@@ -46,12 +51,24 @@ function bindPath(paths: Path[], location: Location, app: express.Express, contr
 
         // 域名路径不匹配直接返回下一个中间件
         if (reqFullUrl !== pathUrl) { return next(); }
-        
-        // 判断query 是否一致
-        if (!isSameQuery(req.query, path.query)) { return next(); }
+
+        // 验证query参数
+        const validQuery = validParams(req.query, path.query);
+        if (!validQuery.valid) {
+          message = validQuery.data;
+          return next();
+        }
+        // query 是否一致
+        // if (!isSameQuery(req.query, path.query)) { return next(); }
 
         // POST 请求下判断参数是否一致
-        if (req.method === 'POST' && !isSameQuery(req.body, path.body)) { return next(); }
+        if (req.method === 'POST') {
+          const validBody = validParams(req.body, path.body);
+          if (!validBody.valid) {
+            message = validBody.data;
+            return next();
+          }
+        }
 
         const handler = controller ? controller[path.handler](req, res, next) : path.handler(req, res, next);
         Promise.resolve(handler).then((data) => {
@@ -78,7 +95,7 @@ export default (app: express.Express) => {
 
     if (location.path && location.path.length) {
       bindPath(location.path, location, app);
-    } 
+    }
     if (location.PathGroup && location.PathGroup.length) {
       location.PathGroup.forEach(group => {
         bindPath(group.path, location, app, group.controller);
@@ -90,7 +107,7 @@ export default (app: express.Express) => {
 };
 
 // 没有匹配数据时
-export function notFound(req: Request, res: Response, next: NextFunction) {
+export function notFound(req: Request, res: Response) {
   res.json({
     code: 200,
     urlParse: {
@@ -102,7 +119,8 @@ export function notFound(req: Request, res: Response, next: NextFunction) {
       params: req.params || null,
       body: req.body,
     },
-    message: '未匹配到请求，请检查url是否正确',
+    message: message || '未匹配到请求，请检查url是否正确',
   });
-  next();
+
+  message = '';
 }

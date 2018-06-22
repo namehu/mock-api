@@ -113,7 +113,6 @@ export default class BaseDao extends UtilsDao {
 
     sql += ORDER_BY + 'create_time' + DESC;
     sql += LIMIT + size + OFFSET + (number - 1);
-
     const data = await new Promise((resolve, reject) => {
       pool.query(sql, (err, result) => {
         if (err) { reject(err); } else if (result) { resolve(result); }
@@ -180,7 +179,6 @@ export default class BaseDao extends UtilsDao {
     let sql = SELECT + CC + FROM + this.tableName;
 
     sql = this.spliceWhere(sql, queryCondition);
-
     const result = await new Promise<any[]>((resolve, reject) => {
       pool.query(sql, (err, result) => {
         if (err) {
