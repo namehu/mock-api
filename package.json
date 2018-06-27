@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon -w dist/ dist/index.js"
+    "mock": "nodemon -w dist/ dist/index.js"
   },
   "dependencies": {
     "babel-cli": "^6.26.0",
