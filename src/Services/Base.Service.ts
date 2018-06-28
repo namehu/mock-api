@@ -1,11 +1,11 @@
+import moment from 'moment';
 import BaseDao from '../Daos/Base.Dao';
 
 export default class BaseService {
 
-  constructor(protected tableName: string) {
-    this.baseDao = new BaseDao(tableName);
+  constructor(public tabalename: string) {
+    this.baseDao = new BaseDao(tabalename);
   }
-  
   /**
    * 基础Dao
    *
@@ -23,7 +23,7 @@ export default class BaseService {
    * @returns
    * @memberof BaseService
    */
-  public query(selectCondition?: string[], queryCondition?: OriginObject) {
+  public query(selectCondition?: string[], queryCondition?: OriginObject): Promise<any[]> {
     return this.baseDao.query(selectCondition, queryCondition);
   }
 
@@ -61,6 +61,8 @@ export default class BaseService {
    * @memberof BaseService
    */
   public add(condition: any) {
+    condition.createTime = moment().format('YYYY-MM-DD HH:mm:ss');
+    condition.updateTime = moment().format('YYYY-MM-DD HH:mm:ss');
     return this.baseDao.add(condition);
   }
 

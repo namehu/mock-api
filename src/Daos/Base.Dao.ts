@@ -22,6 +22,8 @@ import {
   DESC,
   IN,
   DELETE,
+  UPDATE,
+  SET,
 } from '../sql';
 
 const pool = mysql.createPool(Object.assign(mysqlConfig, {
@@ -37,7 +39,7 @@ const pool = mysql.createPool(Object.assign(mysqlConfig, {
  */
 export default class BaseDao extends UtilsDao {
 
-  public constructor(public tableName: string) { 
+  public constructor(public tableName: string = '') { 
     super();
   }
 
@@ -48,8 +50,13 @@ export default class BaseDao extends UtilsDao {
    * @returns
    * @memberof BaseController
    */
-  public async add(condition: any) {
-    let sql = `${INSERT + INTO + this.tableName} (${DOUBLE_QUESTION}) ${VALUES} (${QUESTION})`
+  public async add(condition: any): Promise<MysqlResult> {
+    if (condition.id !== undefined) {
+     try {
+       delete condition.id;
+     } catch (error) {} 
+    }
+    let sql = `${INSERT + INTO + this.tableName} (${DOUBLE_QUESTION}) ${VALUES} (${QUESTION})`;
     const result = await new Promise((resolve, reject) => {
       const sqlKey: string[] = [];
       const sqlValue: string[] = [];
@@ -65,7 +72,7 @@ export default class BaseDao extends UtilsDao {
       });
     });
 
-    return result as any;
+    return result as MysqlResult;
   }
 
   /**
@@ -76,7 +83,7 @@ export default class BaseDao extends UtilsDao {
    * @returns
    * @memberof BaseController
    */
-  public async query(selectCondition?: string[], queryCondition?: OriginObject) {
+  public async query(selectCondition?: string[], queryCondition?: OriginObject): Promise<any[]> {
     const SC = selectCondition && selectCondition.length ? selectCondition.join(',') : STAR;
     let sql = SELECT + SC + FROM + this.tableName;
 
@@ -87,7 +94,7 @@ export default class BaseDao extends UtilsDao {
         if (err) { reject(err); } else if (result) { resolve(result); }
       });
     })
-    return this.convertSqlToEntity(data);
+    return this.convertSqlToEntity(data) as any[];
   }
 
   /**
@@ -106,7 +113,6 @@ export default class BaseDao extends UtilsDao {
 
     sql += ORDER_BY + 'create_time' + DESC;
     sql += LIMIT + size + OFFSET + (number - 1);
-
     const data = await new Promise((resolve, reject) => {
       pool.query(sql, (err, result) => {
         if (err) { reject(err); } else if (result) { resolve(result); }
@@ -123,18 +129,41 @@ export default class BaseDao extends UtilsDao {
    * @returns
    * @memberof BaseDao
    */
-  public async delete(condition: OriginObject) {
+  public async delete(condition: OriginObject): Promise<MysqlResult> {
     let sql = DELETE + FROM + this.tableName;
 
     sql = this.spliceWhere(sql, condition);
 
-    const data = await new Promise<MysqlResult>((resolve, reject) => {
+    const data: MysqlResult = await new Promise<MysqlResult>((resolve, reject) => {
       pool.query(sql, (err, result) => {
         if (err) { reject(err); } else if (result) { resolve(result); }
       });
     })
 
     return data;
+  }
+
+  /**
+   * update语句
+   *
+   * @template T
+   * @param {T} updateEntity
+   * @param {OriginObject} [queryCondition]
+   * @returns {Promise<{}>}
+   * @memberof BaseDao
+   */
+  public async update<T>(updateEntity: T, queryCondition?: OriginObject): Promise<MysqlResult> {
+    let sql = UPDATE + this.tableName;
+    sql = this.spliceUpdate(sql, updateEntity);
+    sql = this.spliceWhere(sql, queryCondition);
+
+    const result: MysqlResult = await new Promise<MysqlResult>((resolve, reject) => {
+      pool.query(sql, (err, result) => {
+        if (err) { reject(err); } else if (result) { resolve(result); }
+      });
+    })
+
+    return result;
   }
 
   /**
@@ -150,7 +179,6 @@ export default class BaseDao extends UtilsDao {
     let sql = SELECT + CC + FROM + this.tableName;
 
     sql = this.spliceWhere(sql, queryCondition);
-
     const result = await new Promise<any[]>((resolve, reject) => {
       pool.query(sql, (err, result) => {
         if (err) {

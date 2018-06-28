@@ -1,8 +1,8 @@
 import { isEmpty, forEach } from 'lodash';
 
 // 数据与实体进行转换
-export function entityMap<T>(body: any, entity: T): T | null {
-  if (isEmpty(entity) || isEmpty(body)) return null;
+export function entityMap<T>(body: any, entity: T): T {
+  if (isEmpty(entity) || isEmpty(body)) return <T>{};
 
   const o: any = {};
 

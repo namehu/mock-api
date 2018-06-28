@@ -19,6 +19,8 @@ export const LIMIT = ' LIMIT ';
 export const OFFSET = ' OFFSET ';
 export const IN = ' IN ';
 export const DELETE = ' DELETE ';
+export const SET = ' SET ';
+export const COMMA = ' , ';
 
 /** ----------------- 项目 --------------------- */
 // 查询项目信息
