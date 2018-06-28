@@ -6,7 +6,7 @@ export function entityMap<T>(body: any, entity: T): T | null {
 
   const o: any = {};
 
-  forEach(entity, (v, k) => {
+  forEach(entity as any, (v: any, k: string) => {
     // console.log(k, v);
     const bk = body[k];
     switch (typeof v) {
