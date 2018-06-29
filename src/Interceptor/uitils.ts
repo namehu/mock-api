@@ -16,6 +16,12 @@ export function validParams(data: any, valid: any) {
     data: ''
   }
 
+  if (!valid || isEmpty(valid)) return validInfo;
+  if (!data || isEmpty(data)) {
+    validInfo.valid = false;
+    return validInfo;
+  }
+
   function error(k: string): boolean {
     validInfo.valid = false;
     validInfo.data = message || `'${k}' parameter's type is not matching`;
@@ -46,8 +52,8 @@ export function validParams(data: any, valid: any) {
         } else if (valueIsEmpty && require) {
           flag = false;
           message = 'parameter is require';
-        } 
-        
+        }
+
         break;
       case Object:
         if (!valueIsEmpty && !(/^{.*}$/).test(dataValue)) {
