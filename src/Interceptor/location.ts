@@ -2,8 +2,6 @@ import { Location } from './index';
 import ProjectController from '../Controllers/Project.Controller';
 import PathController from '../Controllers/Path.Controller';
 
-const c = new ProjectController();
-const pathController = new PathController();
 
 const location: Location = {
   protocol: 'http',
@@ -11,7 +9,7 @@ const location: Location = {
   description: 'mock-api接口',
   PathGroup: [
     {
-      controller: c,
+      controller: new ProjectController(),
       path: [
         {
           name: 'api/projects',
@@ -24,6 +22,9 @@ const location: Location = {
               type: Number,
               require: true,
             },
+            name: String,
+            path: String,
+            protocol: [String, Number],
           },
           handler: 'getProjectList',
           description: '项目列表',
@@ -90,7 +91,7 @@ const location: Location = {
       ]
     }, 
     {
-      controller: pathController,
+      controller: new PathController(),
       path: [
         {
           name: 'api/path',

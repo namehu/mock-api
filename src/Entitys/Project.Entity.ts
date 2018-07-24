@@ -1,5 +1,4 @@
 import BaseEntity from "./Base.Entity";
-import moment, { Moment } from 'moment';
 
 /**
  * 项目实体

@@ -1,6 +1,5 @@
 import { Request } from 'express';
-import moment from 'moment';
-import { isEmpty, forEach, merge, toNumber } from 'lodash';
+import { isEmpty, merge } from 'lodash';
 import ProjectEntity from '../Entitys/Project.Entity';
 import { SUCCESS, NO_FOUND, PARAMS_MISS } from '../httpResponse';
 import { entityMap } from './utils';
@@ -24,9 +23,7 @@ export default class ProjectController {
    * @memberof ProjectController
    */
   public async getProjectList(request: Request) {
-    const size = toNumber(request.query.pageSize);
-    const number = toNumber(request.query.pageNumber);
-    const data = await this.projectService.queryList(number, size);
+    const data = await this.projectService.queryList(request.query);
     return merge({}, {
       code: 200,
       message: 'success',

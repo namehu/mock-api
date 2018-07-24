@@ -21,10 +21,10 @@ export default class ProjectDao extends BaseDao {
    * @returns
    * @memberof ProjectDao
    */
-  public queryList(number: number, size: number) {
-    return this.queryForPaging(number, size, undefined, {
+  public queryList(number: number, size: number, queryCondition: object) {
+    return this.queryForPaging(number, size, undefined, Object.assign({
       status: [1, 2],
-    })
+    }, queryCondition))
   }
 
   /**

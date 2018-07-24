@@ -2,8 +2,7 @@ import moment from 'moment';
 import BaseService from "./Base.Service";
 import ProjectDao from "../Daos/Project.Dao";
 import ProjectEntity from "../Entitys/Project.Entity";
-import { entityMap } from '../Controllers/utils';
-import { isEmpty } from 'lodash';
+import { toNumber, isEmpty } from 'lodash';
 
 /**
  * 项目service层
@@ -34,8 +33,14 @@ export default class ProjectService extends BaseService {
    * @returns
    * @memberof ProjectService
    */
-  public queryList(number: number, size: number) {
-    return this.projectDao.queryList(number, size)
+  public queryList(query: any) {
+    const size: number = toNumber(query.pageSize);
+    const number: number = toNumber(query.pageNumber);
+    const o: any = {};
+    if (!isEmpty(query.name)) o.name = query.name;
+    if (!isEmpty(query.path)) o.path = query.path;
+    if (!isEmpty(query.protocol)) o.protocol = Number(query.protocol);
+    return this.projectDao.queryList(number, size, o);
   }
 
   /**
