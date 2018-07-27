@@ -118,6 +118,19 @@ export default class ProjectController {
     return data;
   }
 
+  /**
+   * 根据id查询项目信息
+   *
+   * @param {Request} request
+   * @returns {Promise<HttpResponseData>}
+   * @memberof ProjectController
+   */
+  public async queryProjectById(request: Request): Promise<HttpResponseData> {
+    const id: number = request.params.id;
+    const data: HttpResponseData = await this.projectService.queryProjectById(id);
+    return data;
+  }
+
 
 }
 

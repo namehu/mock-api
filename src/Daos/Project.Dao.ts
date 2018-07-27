@@ -37,4 +37,15 @@ export default class ProjectDao extends BaseDao {
   public deleteById(id: number) {
     return this.delete({ id });
   }
+
+  /**
+   * 根据id查询项目信息
+   *
+   * @param {number} id
+   * @returns
+   * @memberof ProjectDao
+   */
+  public queryById(id: number) {
+    return this.query(undefined, { id });
+  }
 }

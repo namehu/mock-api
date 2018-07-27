@@ -5,7 +5,7 @@ import PathController from '../Controllers/Path.Controller';
 
 const location: Location = {
   protocol: 'http',
-  url: 'localhost',
+  url: 'mock.com',
   description: 'mock-api接口',
   PathGroup: [
     {
@@ -23,7 +23,7 @@ const location: Location = {
               require: true,
             },
             name: String,
-            path: String,
+            url: String,
             protocol: [String, Number],
           },
           handler: 'getProjectList',
@@ -87,6 +87,11 @@ const location: Location = {
           method: 'DELETE',
           handler: 'deleteById',
           description: '根据id删除项目'
+        }, {
+          name: 'api/project/:id',
+          method: 'GET',
+          handler: 'queryProjectById',
+          description: '根据id查询项目信息',
         }
       ]
     }, 

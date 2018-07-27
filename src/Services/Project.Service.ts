@@ -38,7 +38,7 @@ export default class ProjectService extends BaseService {
     const number: number = toNumber(query.pageNumber);
     const o: any = {};
     if (!isEmpty(query.name)) o.name = query.name;
-    if (!isEmpty(query.path)) o.path = query.path;
+    if (!isEmpty(query.url)) o.url = query.url;
     if (!isEmpty(query.protocol)) o.protocol = Number(query.protocol);
     return this.projectDao.queryList(number, size, o);
   }
@@ -113,5 +113,27 @@ export default class ProjectService extends BaseService {
       }
     }
     return data
+  }
+
+  /**
+   * 根据id查询项目信息
+   *
+   * @param {number} id
+   * @returns {Promise<HttpResponseData>}
+   * @memberof ProjectService
+   */
+  public async queryProjectById(id: number): Promise<HttpResponseData> {
+    let data: HttpResponseData = {
+      code: 200,
+      message: 'success'
+    };
+    const result: any[] = await this.projectDao.queryById(id);
+    if (result && result.length) {
+      data.data = result[0];
+    } else {
+      data.code === 501;
+      data.message === '项目不存在';
+    }
+    return data;
   }
 }

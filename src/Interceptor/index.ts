@@ -109,7 +109,7 @@ export default (app: express.Express) => {
 // 没有匹配数据时
 export function notFound(req: Request, res: Response) {
   res.json({
-    code: 200,
+    code: 501,
     urlParse: {
       method: req.method,
       protocol: req.protocol,
