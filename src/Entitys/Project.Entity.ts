@@ -51,4 +51,6 @@ export default class ProjectEntity extends BaseEntity implements IBaseEntity {
    */
   public description: object = {};
 
+  public a: string = '1';
+
 }
