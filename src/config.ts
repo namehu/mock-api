@@ -2,6 +2,6 @@ export const mysqlConfig = {
   host: '',
   user: '',
   password: '',
-  database: '',
-  port: '',
+  database: '1',
+  port: '1',
 };
